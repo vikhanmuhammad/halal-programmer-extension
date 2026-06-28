@@ -3,7 +3,7 @@
   "displayName": "Halal Programmer",
   "description": "Spiritual reminders woven into the coding workflow: a Bismillah startup gate, prayer-time blocker, and Alhamdulillah closing gate.",
   "version": "0.1.0",
-  "publisher": "local",
+  "publisher": "vikhandev",
   "private": true,
   "engines": {
     "vscode": "^1.85.0"
@@ -69,6 +69,14 @@
       {
         "command": "halalProgramming.guardedQuit",
         "title": "Halal Programmer: Quit (with closing phrase)"
+      },
+      {
+        "command": "halalProgramming.showPrayerSchedule",
+        "title": "Halal Programmer: Show Today's Prayer Times"
+      },
+      {
+        "command": "halalProgramming.debugTriggerPrayerBlock",
+        "title": "Halal Programmer: Debug - Trigger Prayer Reminder Now"
       }
     ],
     "keybindings": [
