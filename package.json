@@ -1,0 +1,101 @@
+{
+  "name": "halal-programming",
+  "displayName": "Halal Programmer",
+  "description": "Spiritual reminders woven into the coding workflow: a Bismillah startup gate, prayer-time blocker, and Alhamdulillah closing gate.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Halal Programmer",
+      "properties": {
+        "halalProgramming.prayerNotification.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a blocking reminder modal when a prayer time arrives."
+        },
+        "halalProgramming.closingGate.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require typing/speaking the closing phrase before Ctrl+Shift+W / Ctrl+Q close the window. Turn off as an escape hatch if this misbehaves."
+        },
+        "halalProgramming.location.latitude": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "default": null,
+          "description": "Manual fallback latitude, used only if IP-based geolocation fails."
+        },
+        "halalProgramming.location.longitude": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "default": null,
+          "description": "Manual fallback longitude, used only if IP-based geolocation fails."
+        },
+        "halalProgramming.calculationMethod": {
+          "type": "number",
+          "default": 3,
+          "description": "Aladhan API calculation method ID (e.g. 3 = Muslim World League, 20 = Kemenag RI / Indonesia)."
+        },
+        "halalProgramming.voiceLocale": {
+          "type": "string",
+          "enum": [
+            "en-US",
+            "id-ID"
+          ],
+          "default": "en-US",
+          "description": "Speech recognition locale used by the voice input option (voice support depends on your VS Code build and may not be available)."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "halalProgramming.guardedCloseWindow",
+        "title": "Halal Programmer: Close Window (with closing phrase)"
+      },
+      {
+        "command": "halalProgramming.guardedQuit",
+        "title": "Halal Programmer: Quit (with closing phrase)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "halalProgramming.guardedCloseWindow",
+        "key": "ctrl+shift+w",
+        "mac": "cmd+shift+w"
+      },
+      {
+        "command": "halalProgramming.guardedQuit",
+        "key": "ctrl+q",
+        "mac": "cmd+q"
+      }
+    ],
+    "configurationDefaults": {
+      "window.confirmBeforeClose": "always"
+    }
+  },
+  "scripts": {
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "vscode:prepublish": "node esbuild.js --production"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.4.0"
+  }
+}
