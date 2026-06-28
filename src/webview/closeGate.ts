@@ -1,5 +1,6 @@
 import { ALHAMDULILLAH_SLOTS } from '../utils/fuzzyMatch';
 import { showPhraseGate } from './phraseGate';
+import { t } from '../i18n';
 
 /**
  * This gate only catches window-close/quit actions that are routed through VS Code's
@@ -11,8 +12,8 @@ import { showPhraseGate } from './phraseGate';
 export function showCloseGate(voiceLocale: string): Promise<void> {
 	return showPhraseGate({
 		panelTitle: 'Halal Programmer',
-		heading: 'Before you close...',
-		instructionHtml: 'Say or type: <strong>Alhamdulillahirabbil\'alamin</strong> (or just "Alhamdulillah")',
+		heading: t('closeHeading'),
+		instructionHtml: t('closeInstruction'),
 		slots: ALHAMDULILLAH_SLOTS,
 		voiceLocale,
 	});

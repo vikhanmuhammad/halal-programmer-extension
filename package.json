@@ -58,6 +58,19 @@
           ],
           "default": "en-US",
           "description": "Speech recognition locale used by the voice input option (voice support depends on your VS Code build and may not be available)."
+        },
+        "halalProgramming.uiLanguage": {
+          "type": "string",
+          "enum": [
+            "en",
+            "id"
+          ],
+          "enumDescriptions": [
+            "English",
+            "Bahasa Indonesia"
+          ],
+          "default": "en",
+          "description": "Language for this extension's own modals and messages. Does not translate Command Palette entries or Settings descriptions, which come from VS Code's own localization system."
         }
       }
     },
@@ -73,6 +86,10 @@
       {
         "command": "halalProgramming.showPrayerSchedule",
         "title": "Halal Programmer: Show Today's Prayer Times"
+      },
+      {
+        "command": "halalProgramming.changeLanguage",
+        "title": "Halal Programmer: Change Language"
       },
       {
         "command": "halalProgramming.debugTriggerPrayerBlock",

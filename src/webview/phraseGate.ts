@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { buildWebviewHtml } from './webviewHtml';
 import { PhraseSlots, matchesPhrase } from '../utils/fuzzyMatch';
+import { t } from '../i18n';
 
 export interface PhraseGateOptions {
 	panelTitle: string;
@@ -9,6 +10,32 @@ export interface PhraseGateOptions {
 	slots: PhraseSlots;
 	voiceLocale: string;
 	viewColumn?: vscode.ViewColumn;
+}
+
+interface GateStrings {
+	placeholder: string;
+	submitLabel: string;
+	voiceLabel: string;
+	voiceUnsupportedTitle: string;
+	emptyInput: string;
+	listening: string;
+	voiceUnavailable: string;
+	retry: string;
+	accepted: string;
+}
+
+function getGateStrings(): GateStrings {
+	return {
+		placeholder: t('gateInputPlaceholder'),
+		submitLabel: t('gateSubmit'),
+		voiceLabel: t('gateVoiceButton'),
+		voiceUnsupportedTitle: t('gateVoiceUnsupportedTitle'),
+		emptyInput: t('gateEmptyInput'),
+		listening: t('gateListening'),
+		voiceUnavailable: t('gateVoiceUnavailable'),
+		retry: t('gateRetry'),
+		accepted: t('gateAccepted'),
+	};
 }
 
 /**
@@ -56,11 +83,12 @@ export function showPhraseGate(options: PhraseGateOptions): Promise<void> {
 			}
 		});
 
+		const strings = getGateStrings();
 		panel.webview.html = buildWebviewHtml({
 			title: options.panelTitle,
-			bodyHtml: getBodyHtml(options),
+			bodyHtml: getBodyHtml(options, strings),
 			styleText: SHARED_STYLE,
-			scriptText: getScript(options.voiceLocale),
+			scriptText: getScript(options.voiceLocale, strings),
 		});
 	});
 }
@@ -102,23 +130,23 @@ button:disabled { opacity: 0.5; cursor: default; }
 .message.success { color: var(--vscode-terminal-ansiGreen); }
 `;
 
-function getBodyHtml(options: PhraseGateOptions): string {
+function getBodyHtml(options: PhraseGateOptions, strings: GateStrings): string {
 	return `
 <div class="gate">
 	<h1>${options.heading}</h1>
 	<p>${options.instructionHtml}</p>
 	<div class="row">
-		<input id="phraseInput" type="text" autocomplete="off" placeholder="Type the phrase..." />
-		<button id="submitBtn">Submit</button>
+		<input id="phraseInput" type="text" autocomplete="off" placeholder="${strings.placeholder}" />
+		<button id="submitBtn">${strings.submitLabel}</button>
 	</div>
 	<div class="row">
-		<button id="voiceBtn" class="secondary">🎤 Voice</button>
+		<button id="voiceBtn" class="secondary">${strings.voiceLabel}</button>
 	</div>
 	<p id="message" class="message"></p>
 </div>`;
 }
 
-function getScript(voiceLocale: string): string {
+function getScript(voiceLocale: string, strings: GateStrings): string {
 	return `
 (function () {
 	const vscodeApi = acquireVsCodeApi();
@@ -127,6 +155,7 @@ function getScript(voiceLocale: string): string {
 	const voiceBtn = document.getElementById('voiceBtn');
 	const message = document.getElementById('message');
 	const voiceLocale = ${JSON.stringify(voiceLocale)};
+	const strings = ${JSON.stringify(strings)};
 
 	function setMessage(text, kind) {
 		message.textContent = text;
@@ -135,7 +164,7 @@ function getScript(voiceLocale: string): string {
 
 	function submit(text) {
 		if (!text || !text.trim()) {
-			setMessage('Please say or type the phrase first.', 'error');
+			setMessage(strings.emptyInput, 'error');
 			return;
 		}
 		vscodeApi.postMessage({ type: 'attempt', text: text });
@@ -150,14 +179,14 @@ function getScript(voiceLocale: string): string {
 
 	if (!SpeechRecognitionImpl) {
 		voiceBtn.disabled = true;
-		voiceBtn.title = 'Voice input is not available in this VS Code build.';
+		voiceBtn.title = strings.voiceUnsupportedTitle;
 	} else {
 		voiceBtn.addEventListener('click', function () {
 			let recognition;
 			try {
 				recognition = new SpeechRecognitionImpl();
 			} catch (err) {
-				setMessage('Voice unavailable in this VS Code version — please type the phrase instead.', 'error');
+				setMessage(strings.voiceUnavailable, 'error');
 				return;
 			}
 			recognition.lang = voiceLocale;
@@ -165,7 +194,7 @@ function getScript(voiceLocale: string): string {
 			recognition.maxAlternatives = 1;
 
 			voiceBtn.disabled = true;
-			setMessage('Listening...', '');
+			setMessage(strings.listening, '');
 
 			recognition.onresult = function (event) {
 				const transcript = event.results[0][0].transcript;
@@ -173,7 +202,7 @@ function getScript(voiceLocale: string): string {
 				submit(transcript);
 			};
 			recognition.onerror = function () {
-				setMessage('Voice unavailable in this VS Code version — please type the phrase instead.', 'error');
+				setMessage(strings.voiceUnavailable, 'error');
 				voiceBtn.disabled = false;
 			};
 			recognition.onend = function () {
@@ -183,7 +212,7 @@ function getScript(voiceLocale: string): string {
 			try {
 				recognition.start();
 			} catch (err) {
-				setMessage('Voice unavailable in this VS Code version — please type the phrase instead.', 'error');
+				setMessage(strings.voiceUnavailable, 'error');
 				voiceBtn.disabled = false;
 			}
 		});
@@ -192,11 +221,11 @@ function getScript(voiceLocale: string): string {
 	window.addEventListener('message', function (event) {
 		const msg = event.data;
 		if (msg.type === 'retry') {
-			setMessage('Not quite — please try again.', 'error');
+			setMessage(strings.retry, 'error');
 			input.value = '';
 			input.focus();
 		} else if (msg.type === 'success') {
-			setMessage('Accepted.', 'success');
+			setMessage(strings.accepted, 'success');
 			input.disabled = true;
 			submitBtn.disabled = true;
 			voiceBtn.disabled = true;

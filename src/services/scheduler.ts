@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { resolveLocation } from './location';
 import { getTodaysTimings, localDateKey, PrayerTimings } from './prayerTimes';
 import { showPrayerBlock } from '../webview/prayerBlock';
+import { t } from '../i18n';
 
 const LAST_SHOWN_KEY = 'halalProgramming.lastShownPrayer';
 const GRACE_MINUTES = 15;
@@ -33,9 +34,7 @@ async function runTick(context: vscode.ExtensionContext): Promise<void> {
 	if (!coords) {
 		if (!warnedNoLocation) {
 			warnedNoLocation = true;
-			void vscode.window.showWarningMessage(
-				'Halal Programmer could not detect your location for prayer times. Set halalProgramming.location.latitude/longitude in Settings.',
-			);
+			void vscode.window.showWarningMessage(t('locationUnavailable'));
 		}
 		return;
 	}
