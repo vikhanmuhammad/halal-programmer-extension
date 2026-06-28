@@ -41,20 +41,17 @@ export function fuzzyContains(haystack: string, needle: string, maxDistance: num
 	return false;
 }
 
-/** Each inner array is a set of acceptable spellings for that keyword slot; all slots must be present (in any order) for a match. */
+/**
+ * Each inner array is a set of acceptable spellings for that keyword slot; all slots must be
+ * present (in any order) for a match. Only the core keyword is required, not the full phrase —
+ * the full phrase already contains the core keyword as a prefix, so this accepts both
+ * "Bismillah"/"Alhamdulillah" alone and the full "...irrahmanirrahim"/"...irabbil'alamin" forms.
+ */
 export type PhraseSlots = string[][];
 
-export const BISMILLAH_SLOTS: PhraseSlots = [
-	['bismillah'],
-	['rahman', 'rohman'],
-	['rahim', 'rohim'],
-];
+export const BISMILLAH_SLOTS: PhraseSlots = [['bismillah']];
 
-export const ALHAMDULILLAH_SLOTS: PhraseSlots = [
-	['alhamdulillah'],
-	['robbil', 'rabbil'],
-	['alamin'],
-];
+export const ALHAMDULILLAH_SLOTS: PhraseSlots = [['alhamdulillah']];
 
 export function matchesPhrase(input: string, slots: PhraseSlots, maxDistancePerKeyword = 1): boolean {
 	const normalized = normalize(input);

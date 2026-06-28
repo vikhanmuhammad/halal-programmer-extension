@@ -5,7 +5,7 @@ export function showStartupGate(voiceLocale: string): Promise<void> {
 	return showPhraseGate({
 		panelTitle: 'Halal Programmer',
 		heading: 'Before you start...',
-		instructionHtml: 'Say or type: <strong>Bismillahirohmanirohim</strong>',
+		instructionHtml: 'Say or type: <strong>Bismillahirrahmanirrahim</strong> (or just "Bismillah")',
 		slots: BISMILLAH_SLOTS,
 		voiceLocale,
 	});

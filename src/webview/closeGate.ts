@@ -12,7 +12,7 @@ export function showCloseGate(voiceLocale: string): Promise<void> {
 	return showPhraseGate({
 		panelTitle: 'Halal Programmer',
 		heading: 'Before you close...',
-		instructionHtml: 'Say or type: <strong>Alhamdulillahirobbil alamin</strong>',
+		instructionHtml: 'Say or type: <strong>Alhamdulillahirabbil\'alamin</strong> (or just "Alhamdulillah")',
 		slots: ALHAMDULILLAH_SLOTS,
 		voiceLocale,
 	});
