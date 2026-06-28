@@ -2,10 +2,15 @@
   "name": "halal-programming",
   "displayName": "Halal Programmer",
   "description": "Spiritual reminders woven into the coding workflow: a Bismillah startup gate, prayer-time blocker, and Alhamdulillah closing gate.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "vikhandev",
   "private": true,
+  "license": "UNLICENSED",
   "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vikhanmuhammad/halal-programmer-extension"
+  },
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -138,11 +143,13 @@
   "scripts": {
     "compile": "node esbuild.js",
     "watch": "node esbuild.js --watch",
-    "vscode:prepublish": "node esbuild.js --production"
+    "vscode:prepublish": "node esbuild.js --production",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/vscode": "^1.93.0",
+    "@vscode/vsce": "^2.32.0",
     "esbuild": "^0.21.0",
     "typescript": "^5.4.0"
   }
