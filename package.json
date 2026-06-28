@@ -5,8 +5,9 @@
   "version": "0.1.0",
   "publisher": "vikhandev",
   "private": true,
+  "icon": "media/icon.png",
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.93.0"
   },
   "categories": [
     "Other"
@@ -71,6 +72,11 @@
           ],
           "default": "en",
           "description": "Language for this extension's own modals and messages. Does not translate Command Palette entries or Settings descriptions, which come from VS Code's own localization system."
+        },
+        "halalProgramming.terminalErrorSound.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Play a sound when a command in the Terminal panel fails (non-zero exit code or output mentioning \"error\"). Off by default - toggle via the \"Halal Programmer: Toggle Terminal Error Sound\" command. Only works in terminals with shell integration active (PowerShell, Git Bash - not cmd.exe), and only watches the Terminal panel, not Problems/Output/Debug Console."
         }
       }
     },
@@ -92,8 +98,16 @@
         "title": "Halal Programmer: Change Language"
       },
       {
+        "command": "halalProgramming.toggleTerminalErrorSound",
+        "title": "Halal Programmer: Toggle Terminal Error Sound"
+      },
+      {
         "command": "halalProgramming.debugTriggerPrayerBlock",
         "title": "Halal Programmer: Debug - Trigger Prayer Reminder Now"
+      },
+      {
+        "command": "halalProgramming.debugPlayErrorSound",
+        "title": "Halal Programmer: Debug - Play Terminal Error Sound Now"
       }
     ],
     "keybindings": [
@@ -107,7 +121,19 @@
         "key": "ctrl+q",
         "mac": "cmd+q"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "halalProgramming.debugTriggerPrayerBlock",
+          "when": "false"
+        },
+        {
+          "command": "halalProgramming.debugPlayErrorSound",
+          "when": "false"
+        }
+      ]
+    }
   },
   "scripts": {
     "compile": "node esbuild.js",
@@ -116,7 +142,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "@types/vscode": "^1.85.0",
+    "@types/vscode": "^1.93.0",
     "esbuild": "^0.21.0",
     "typescript": "^5.4.0"
   }

@@ -75,6 +75,8 @@ const STRINGS = {
 		id: 'Halal Programmer tidak dapat mengambil jadwal shalat hari ini. Periksa koneksi internet Anda.',
 	},
 	todaysPrayerTimes: { en: "Today's prayer times", id: 'Jadwal shalat hari ini' },
+	terminalErrorSoundEnabled: { en: 'Terminal error sound: ON', id: 'Suara error terminal: AKTIF' },
+	terminalErrorSoundDisabled: { en: 'Terminal error sound: OFF', id: 'Suara error terminal: NONAKTIF' },
 } satisfies Record<string, Record<Lang, string>>;
 
 type StringKey = keyof typeof STRINGS;

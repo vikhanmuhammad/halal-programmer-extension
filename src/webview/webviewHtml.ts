@@ -14,7 +14,7 @@ export interface WebviewHtmlOptions {
 	scriptText: string;
 }
 
-/** All gate webviews render inline-only content (no remote resources), so a strict nonce-scoped CSP with no connect-src is sufficient. */
+/** All webviews render inline-only content (no remote resources), so a strict nonce-scoped CSP with no connect-src/media-src is sufficient. */
 export function buildWebviewHtml(options: WebviewHtmlOptions): string {
 	const nonce = getNonce();
 	const csp = [`default-src 'none'`, `style-src 'nonce-${nonce}'`, `script-src 'nonce-${nonce}'`].join('; ');

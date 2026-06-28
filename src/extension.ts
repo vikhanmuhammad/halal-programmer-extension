@@ -2,7 +2,9 @@ import * as vscode from 'vscode';
 import { showStartupGate } from './webview/startupGate';
 import { showCloseGate } from './webview/closeGate';
 import { showPrayerBlock } from './webview/prayerBlock';
+import { playErrorSound } from './webview/soundPlayer';
 import { startScheduler } from './services/scheduler';
+import { startTerminalErrorWatcher } from './services/terminalWatcher';
 import { resolveLocation } from './services/location';
 import { getTodaysTimings } from './services/prayerTimes';
 import { getLang, t } from './i18n';
@@ -13,6 +15,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	registerGuardedCloseCommands(context);
 	registerPrayerCommands(context);
 	registerLanguageCommand(context);
+	registerTerminalErrorSoundCommands(context);
+	context.subscriptions.push(startTerminalErrorWatcher(context));
 
 	await showStartupGate(getVoiceLocale());
 
@@ -55,6 +59,7 @@ function registerPrayerCommands(context: vscode.ExtensionContext): void {
 			showPrayerBlock('Test');
 		}),
 		vscode.commands.registerCommand('halalProgramming.showPrayerSchedule', () => showPrayerSchedule(context)),
+		vscode.commands.registerCommand('halalProgramming.debugPlayErrorSound', () => playErrorSound(context)),
 	);
 }
 
@@ -101,4 +106,19 @@ async function changeLanguage(): Promise<void> {
 	await vscode.workspace
 		.getConfiguration('halalProgramming')
 		.update('uiLanguage', picked.value, vscode.ConfigurationTarget.Global);
+}
+
+function registerTerminalErrorSoundCommands(context: vscode.ExtensionContext): void {
+	context.subscriptions.push(
+		vscode.commands.registerCommand('halalProgramming.toggleTerminalErrorSound', toggleTerminalErrorSound),
+	);
+}
+
+async function toggleTerminalErrorSound(): Promise<void> {
+	const config = vscode.workspace.getConfiguration('halalProgramming');
+	const next = !config.get<boolean>('terminalErrorSound.enabled', false);
+
+	await config.update('terminalErrorSound.enabled', next, vscode.ConfigurationTarget.Global);
+
+	void vscode.window.showInformationMessage(next ? t('terminalErrorSoundEnabled') : t('terminalErrorSoundDisabled'));
 }
